@@ -10,6 +10,8 @@ neopixel_pin = Pin(27, Pin.OUT)  # configure output on pin G27 (atom matrix disp
 neopixel_strip = NeoPixel(neopixel_pin, 25)  # create NeoPixel object with 25 pixels
 
 sensor_timer = ticks_ms()
+program_state = 'CALIBRATION' # keep track of program state
+calibration_val = 0 # sensor calibration value
 
 # map an input value (v_in) between min/max ranges:
 def map_value(in_val, in_min, in_max, out_min, out_max):
