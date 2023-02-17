@@ -16,14 +16,12 @@ green = 0;
 blue = 0;
 
 
-led1 = Pin(22, Pin.OUT);
-led2 = Pin(19, Pin.OUT);
-led3 = Pin(23, Pin.OUT);
-led4 = Pin(33, Pin.OUT);
+led1 = Pin(22, Pin.IN);
+led2 = Pin(19, Pin.IN);
+led3 = Pin(23, Pin.IN);
+led4 = Pin(33, Pin.IN);
 
 mode = "0";
-count1 = 0;
-count2 = 0;
 
 btn = Pin(21, Pin.IN, Pin.PULL_UP);
 
@@ -37,11 +35,8 @@ def map_value(in_val, in_min, in_max, out_min, out_max):
     return int(v);
 
 while True:
-    if (mode == "0") and (btn.value() == 1) and (count1 == 0):
-        count2 += 1;
+    if (mode == "0") and (btn.value() == 1):
         mode = "1";
-    elif (btn.value() == 0) and (count1 != count2):
-        count1 = count2;
     elif (mode == "1") and (btn.value() == 1):
         mode = "2";
     elif (mode == "2") and (btn.value() == 1):

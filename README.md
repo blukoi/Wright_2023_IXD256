@@ -2,7 +2,8 @@
 
 ## Assignment 1
 
-The prompt for this assignment was to create a "button" or complete a circuit in a way which did not resemble a typical "push button" that you might find on an appliance.
+**The prompt:**
+- Create a "button" or complete a circuit in a way which did not resemble a typical "push button" that you might find on an appliance.
 
 I didn't necessarily have a purpose in mind, but I wanted to complete a circuit using coins.
 
@@ -19,4 +20,6 @@ Final, physical prototype:
 
 ## Assignment 2
 
-(in process)
+**The Prompt**
+- Create a prototype using some form of analog to digital input, such as a potentiometer, light sensor, motion sensor, pressure sensor, etc.
+- Prototype must go beyond simple on/off states
