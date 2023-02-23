@@ -16,12 +16,15 @@ green = 0;
 blue = 0;
 
 
-led1 = Pin(22, Pin.IN);
-led2 = Pin(19, Pin.IN);
-led3 = Pin(23, Pin.IN);
-led4 = Pin(33, Pin.IN);
+led1 = Pin(22, Pin.OUT);
+led2 = Pin(19, Pin.OUT);
+led3 = Pin(23, Pin.OUT);
+led4 = Pin(33, Pin.OUT);
 
 mode = "0";
+
+code1 = 1;
+code2 = 0;
 
 btn = Pin(21, Pin.IN, Pin.PULL_UP);
 
@@ -34,12 +37,61 @@ def map_value(in_val, in_min, in_max, out_min, out_max):
         v = out_max;
     return int(v);
 
+# TEST AREA
 while True:
+    print("Testing:")
+    sleep(.5);
     if (mode == "0") and (btn.value() == 1):
+        print("Button is working");
+        led1.off();
+        led2.off();
+        led3.off();
+        led4.off();
+        sleep_ms(100);
+    if (mode == "0") and (btn.value() == 0):
+        print("Broken button");
+        sleep(.5);
+'''
+while True:
+    if (mode == "0") and (btn.value() == 1) and (code1 > code2):
         mode = "1";
+        code2 += 1;
+        led1.on();
+        led2.off();
+        led3.off();
+        led4.off();
+        sleep(.5);
     elif (mode == "1") and (btn.value() == 1):
         mode = "2";
+        code2 += 1;
+        led1.off();
+        led2.on();
+        led3.off();
+        led4.off();
+        sleep(.5);
     elif (mode == "2") and (btn.value() == 1):
         mode = "3";
+        code2 += 1;
+        led1.off();
+        led2.off();
+        led3.on();
+        led4.off();
+        sleep(.5);
     elif (mode == "3") and (btn.value() == 1):
         mode = "4";
+        code2 += 1;
+        led1.off();
+        led2.off();
+        led3.off();
+        led4.on();
+        sleep(.5);
+    elif (mode == "4") and (btn.value() == 1):
+        mode = "0";
+        code2 += 1;
+        led1.off();
+        led2.off();
+        led3.off();
+        led4.off();
+        sleep(.5);
+    elif (code1 == code2):
+        code1 += 1;'''
