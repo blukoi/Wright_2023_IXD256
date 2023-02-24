@@ -61,8 +61,8 @@ def map_value(in_val, in_min, in_max, out_min, out_max):
 
 while True:
     d = tof.distance;
-    d_55 = map_value(d, in_min = 0, in_max = 8192, out_min = 0, out_max = 55);
-    b = ;
+    d_55 = map_value(d, in_min = 0, in_max = 8192, out_min = 0, out_max = 50);
+    b = 0;
     brightness = map_value(b, in_min = 0, in_max = 4056, out_min = 0, out_max = 200);
     if (code1 > code2) and (ticks_ms() > sensor_timer+500):
         # print('PART ONE WORKING');
@@ -75,7 +75,7 @@ while True:
                 led2.off();
                 led3.off();
                 led4.off();
-                red = 200;
+                red = 205;
                 green = 0;
                 blue = 0;
                 '''for strip in range(30):
@@ -100,7 +100,7 @@ while True:
                 led3.off();
                 led4.off();
                 red = 0;
-                green = 200;
+                green = 205;
                 blue = 0;
                 '''for i in range(30):
                     neopixel_strip[i] = (red, green, blue);
@@ -118,7 +118,7 @@ while True:
                 led4.off();
                 red = 0;
                 green = 0;
-                blue = 200;
+                blue = 205;
                 '''for i in range(30):
                     neopixel_strip[i] = (red, green, blue);
                 neopixel_strip.write();'''
@@ -133,9 +133,9 @@ while True:
                 led2.off();
                 led3.off();
                 led4.on();
-                red = 200;
-                green = 200;
-                blue = 200;
+                red = 205;
+                green = 205;
+                blue = 205;
                 '''for i in range(30):
                     neopixel_strip[i] = (red, green, blue);
                 neopixel_strip.write();'''
