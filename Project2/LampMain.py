@@ -17,8 +17,6 @@ red = 0;
 green = 0;
 blue = 0;
 
-brightness = 0;
-
 led1 = Pin(22, Pin.OUT);
 led2 = Pin(19, Pin.OUT);
 led3 = Pin(23, Pin.OUT);
@@ -29,6 +27,7 @@ mode = "OFF";
 sensor_timer = ticks_ms();
 code1 = 1;
 code2 = 0;
+codemax = 6;
 code_timer = ticks_ms();
 light_timer = ticks_ms();
 
@@ -62,7 +61,10 @@ def map_value(in_val, in_min, in_max, out_min, out_max):
 
 while True:
     d = tof.distance;
-    if (code1 > code2) and (ticks_ms() > sensor_timer+100):
+    d_55 = map_value(d, in_min = 0, in_max = 8192, out_min = 0, out_max = 55);
+    b = ;
+    brightness = map_value(b, in_min = 0, in_max = 4056, out_min = 0, out_max = 200);
+    if (code1 > code2) and (ticks_ms() > sensor_timer+500):
         # print('PART ONE WORKING');
         if btn.value() == 0:
             # print('part 2 worked');
@@ -159,9 +161,12 @@ while True:
                     neopixel_strip.write();
                     sleep(.05);
         sensor_timer = ticks_ms()
-    if (code1 == code2) and (ticks_ms() > code_timer+500):
+    elif (code1 == code2) and (ticks_ms() > code_timer+500):
         code1 += 1;
         code_timer = ticks_ms();
+    elif code1 >= codemax:
+        code1 = 1;
+        code2 = 0;
 
 '''
     if (mode == "0") and (btn.value() == 1):
