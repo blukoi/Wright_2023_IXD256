@@ -1,3 +1,5 @@
+from m5stack import * # import m5stack libraries
+import unit # import m5stack unit library
 from machine import Pin, ADC
 from time import *
 from neopixel import NeoPixel
@@ -24,11 +26,15 @@ led4 = Pin(33, Pin.OUT);
 
 mode = "OFF";
 
-sensor_timer = ticks_ms()
+sensor_timer = ticks_ms();
 code1 = 1;
 code2 = 0;
+code_timer = ticks_ms();
+light_timer = ticks_ms();
 
 btn = Pin(21, Pin.IN, Pin.PULL_UP);
+
+tof = unit.get(unit.TOF, unit.PORTA);
 
 # map an input value (v_in) between min/max ranges:
 def map_value(in_val, in_min, in_max, out_min, out_max):
@@ -55,10 +61,7 @@ def map_value(in_val, in_min, in_max, out_min, out_max):
         sleep(.5);'''
 
 while True:
-    '''led1.off();
-    led2.off();
-    led3.off();
-    led4.off();'''
+    d = tof.distance;
     if (code1 > code2) and (ticks_ms() > sensor_timer+100):
         # print('PART ONE WORKING');
         if btn.value() == 0:
@@ -156,8 +159,10 @@ while True:
                     neopixel_strip.write();
                     sleep(.05);
         sensor_timer = ticks_ms()
-    if code1 == code2:
+    if (code1 == code2) and (ticks_ms() > code_timer+500):
         code1 += 1;
+        code_timer = ticks_ms();
+
 '''
     if (mode == "0") and (btn.value() == 1):
         led1.off();
