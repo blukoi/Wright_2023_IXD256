@@ -4,23 +4,23 @@ from machine import Pin, ADC
 from time import *
 from neopixel import NeoPixel
 
-analog_pin = Pin(32, Pin.IN)  # configure input on pin G32 (white wire)
+'''analog_pin = Pin(32, Pin.IN)  # configure input on pin G32 (white wire)
 adc = ADC(analog_pin)  # create analog-to-digital converter (ADC) input
-adc.atten(ADC.ATTN_11DB)  # set 11dB attenuation (2.45V range)
+adc.atten(ADC.ATTN_11DB)  # set 11dB attenuation (2.45V range)'''
 
 # neopixel_pin = Pin(27, Pin.OUT) #configure output to G27 to use the 5x5 screen on Atom Matrix
                                     #If using G27, change 30 to 25
-neopixel_pin = Pin(26, Pin.OUT) #configure output on pin G26 (yellow wire)
+neopixel_pin = Pin(25, Pin.OUT) #configure output on pin G26 (yellow wire)
 neopixel_strip = NeoPixel(neopixel_pin, 30) #create NeoPixel object with 30 pixels
 
 red = 0;
 green = 0;
 blue = 0;
 
-led1 = Pin(22, Pin.OUT);
+'''led1 = Pin(22, Pin.OUT);
 led2 = Pin(19, Pin.OUT);
 led3 = Pin(23, Pin.OUT);
-led4 = Pin(33, Pin.OUT);
+led4 = Pin(33, Pin.OUT);'''
 
 mode = "OFF";
 
@@ -63,100 +63,79 @@ while True:
     d = tof.distance;
     d_55 = map_value(d, in_min = 0, in_max = 8192, out_min = 0, out_max = 50);
     b = 0;
-    brightness = map_value(b, in_min = 0, in_max = 4056, out_min = 0, out_max = 200);
+    brightness = map_value(b, in_min = 0, in_max = 4056, out_min = 0, out_max = 100);
     if (code1 > code2) and (ticks_ms() > sensor_timer+500):
-        # print('PART ONE WORKING');
+        print('PART ONE WORKING');
+        print(d_55);
         if btn.value() == 0:
-            # print('part 2 worked');
+            print('part 2 worked');
             if mode == "OFF":
                 mode = "RED";
                 code2 += 1;
-                led1.on();
+                '''led1.on();
                 led2.off();
                 led3.off();
-                led4.off();
-                red = 205;
-                green = 0;
-                blue = 0;
-                '''for strip in range(30):
-                    neopixel_strip[strip] = (red, green, blue);
-                for i in reversed(range(255)):
-                    if red >= 254:
-                        red = i;
-                    sleep(.5);
-                for i in range(255):
-                    if red == 0:
-                        red = i;
-                    sleep(.5);'''
+                led4.off();'''
                 for i in range(30):
+                    red = (205 + int(d_55));
+                    green = 0;
+                    blue = 0;
                     neopixel_strip[i] = (red, green, blue);
                     neopixel_strip.write();
                     sleep(.05);
             elif mode == "RED":
                 mode = "GREEN";
                 code2 += 1;
-                led1.off();
+                '''led1.off();
                 led2.on();
                 led3.off();
-                led4.off();
-                red = 0;
-                green = 205;
-                blue = 0;
-                '''for i in range(30):
-                    neopixel_strip[i] = (red, green, blue);
-                neopixel_strip.write();'''
+                led4.off();'''
                 for i in range(30):
+                    red = 0;
+                    green = (205 + int(d_55));
+                    blue = 0;
                     neopixel_strip[i] = (red, green, blue);
                     neopixel_strip.write();
                     sleep(.05);
             elif mode == "GREEN":
                 mode = "BLUE";
                 code2 += 1;
-                led1.off();
+                '''led1.off();
                 led2.off();
                 led3.on();
-                led4.off();
-                red = 0;
-                green = 0;
-                blue = 205;
-                '''for i in range(30):
-                    neopixel_strip[i] = (red, green, blue);
-                neopixel_strip.write();'''
+                led4.off();'''
                 for i in range(30):
+                    red = 0;
+                    green = 0;
+                    blue = (205 + int(d_55));
                     neopixel_strip[i] = (red, green, blue);
                     neopixel_strip.write();
                     sleep(.05);
             elif mode == "BLUE":
                 mode = "WHITE";
                 code2 += 1;
-                led1.off();
+                '''led1.off();
                 led2.off();
                 led3.off();
-                led4.on();
-                red = 205;
-                green = 205;
-                blue = 205;
-                '''for i in range(30):
-                    neopixel_strip[i] = (red, green, blue);
-                neopixel_strip.write();'''
+                led4.on();'''
                 for i in range(30):
+                    red = (105 + int(d_55) - int(brightness));
+                    green = (205 + int(d_55));
+                    blue = (205 + int(d_55));
                     neopixel_strip[i] = (red, green, blue);
                     neopixel_strip.write();
                     sleep(.05);
             elif mode == "WHITE":
                 mode = "OFF";
                 code2 += 1;
-                led1.off();
+                '''led1.off();
                 led2.off();
                 led3.off();
-                led4.off();
-                red = 0;
-                green = 0;
-                blue = 0;
-                '''for i in range(30):
-                    neopixel_strip[i] = (red, green, blue);
-                neopixel_strip.write();'''
+                led4.off();'''
                 for i in range(30):
+                    red = 0;
+                    green = 0;
+                    blue = 0;
                     neopixel_strip[i] = (red, green, blue);
                     neopixel_strip.write();
                     sleep(.05);
