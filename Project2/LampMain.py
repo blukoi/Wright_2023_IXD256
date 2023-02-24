@@ -21,7 +21,7 @@ led2 = Pin(19, Pin.OUT);
 led3 = Pin(23, Pin.OUT);
 led4 = Pin(33, Pin.OUT);
 
-mode = "0";
+mode = "OFF";
 
 code1 = 1;
 code2 = 0;
@@ -53,6 +53,54 @@ def map_value(in_val, in_min, in_max, out_min, out_max):
         sleep(.5);'''
 
 while True:
+    if code1 > code2:
+        print('PART ONE WORKING');
+        if btn.value() == 0:
+            print('part 2 worked');
+            if mode == "OFF":
+                mode = "RED";
+                code2 += 1;
+                led1.on();
+                led2.off();
+                led3.off();
+                led4.off();
+                sleep(.5);
+            elif mode == "RED":
+                mode = "GREEN";
+                code2 += 1;
+                led1.off();
+                led2.on();
+                led3.off();
+                led4.off();
+                sleep(.5);
+            elif mode == "GREEN":
+                mode = "BLUE";
+                code2 += 1;
+                led1.off();
+                led2.off();
+                led3.on();
+                led4.off();
+                sleep(.5);
+            elif mode == "BLUE":
+                mode = "WHITE";
+                code2 += 1;
+                led1.off();
+                led2.off();
+                led3.off();
+                led4.on();
+                sleep(.5);
+            elif mode == "WHITE":
+                mode = "OFF";
+                code2 += 1;
+                led1.off();
+                led2.off();
+                led3.off();
+                led4.off();
+                sleep(.5);
+    if code1 == code2:
+        code1 += 1;
+        sleep(.5);
+'''
     if (mode == "0") and (btn.value() == 1):
         led1.off();
         led2.off();
@@ -67,7 +115,7 @@ while True:
         led3.off();
         led4.off();
         sleep(.5);
-    elif (mode == "1") and (btn.value() == 0):
+    elif (mode == "1") and (btn.value() == 0) and (code1 > code2):
         mode = "2";
         code2 += 1;
         led1.off();
@@ -75,7 +123,7 @@ while True:
         led3.off();
         led4.off();
         sleep(.5);
-    elif (mode == "2") and (btn.value() == 0):
+    elif (mode == "2") and (btn.value() == 0) and (code1 > code2):
         mode = "3";
         code2 += 1;
         led1.off();
@@ -83,7 +131,7 @@ while True:
         led3.on();
         led4.off();
         sleep(.5);
-    elif (mode == "3") and (btn.value() == 0):
+    elif (mode == "3") and (btn.value() == 0) and (code1 > code2):
         mode = "4";
         code2 += 1;
         led1.off();
@@ -91,7 +139,7 @@ while True:
         led3.off();
         led4.on();
         sleep(.5);
-    elif (mode == "4") and (btn.value() == 0):
+    elif (mode == "4") and (btn.value() == 0) and (code1 > code2):
         mode = "0";
         code2 += 1;
         led1.off();
@@ -100,4 +148,4 @@ while True:
         led4.off();
         sleep(.5);
     elif (code1 == code2):
-        code1 += 1;
+        code1 += 1;'''
