@@ -11,10 +11,11 @@ adc.atten(ADC.ATTN_11DB)  # set 11dB attenuation (2.45V range)
 neopixel_pin = Pin(26, Pin.OUT) #configure output on pin G26 (yellow wire)
 neopixel_strip = NeoPixel(neopixel_pin, 30) #create NeoPixel object with 30 pixels
 
-red = 255;
+red = 0;
 green = 0;
 blue = 0;
 
+brightness = 0;
 
 led1 = Pin(22, Pin.OUT);
 led2 = Pin(19, Pin.OUT);
@@ -54,9 +55,9 @@ def map_value(in_val, in_min, in_max, out_min, out_max):
 
 while True:
     if code1 > code2:
-        print('PART ONE WORKING');
+        # print('PART ONE WORKING');
         if btn.value() == 0:
-            print('part 2 worked');
+            # print('part 2 worked');
             if mode == "OFF":
                 mode = "RED";
                 code2 += 1;
@@ -64,6 +65,12 @@ while True:
                 led2.off();
                 led3.off();
                 led4.off();
+                red = 255;
+                green = 0;
+                blue = 0;
+                for i in range(30):
+                    neopixel_strip[i] = (red, green, blue);
+                neopixel_strip.write();
                 sleep(.5);
             elif mode == "RED":
                 mode = "GREEN";
@@ -72,6 +79,12 @@ while True:
                 led2.on();
                 led3.off();
                 led4.off();
+                red = 0;
+                green = 255;
+                blue = 0;
+                for i in range(30):
+                    neopixel_strip[i] = (red, green, blue);
+                neopixel_strip.write();
                 sleep(.5);
             elif mode == "GREEN":
                 mode = "BLUE";
@@ -80,6 +93,12 @@ while True:
                 led2.off();
                 led3.on();
                 led4.off();
+                red = 0;
+                green = 0;
+                blue = 255;
+                for i in range(30):
+                    neopixel_strip[i] = (red, green, blue);
+                neopixel_strip.write();
                 sleep(.5);
             elif mode == "BLUE":
                 mode = "WHITE";
@@ -88,6 +107,12 @@ while True:
                 led2.off();
                 led3.off();
                 led4.on();
+                red = 255;
+                green = 255;
+                blue = 255;
+                for i in range(30):
+                    neopixel_strip[i] = (red, green, blue);
+                neopixel_strip.write();
                 sleep(.5);
             elif mode == "WHITE":
                 mode = "OFF";
@@ -96,6 +121,12 @@ while True:
                 led2.off();
                 led3.off();
                 led4.off();
+                red = 0;
+                green = 0;
+                blue = 0;
+                for i in range(30):
+                    neopixel_strip[i] = (red, green, blue);
+                neopixel_strip.write();
                 sleep(.5);
     if code1 == code2:
         code1 += 1;
