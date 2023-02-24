@@ -24,6 +24,7 @@ led4 = Pin(33, Pin.OUT);
 
 mode = "OFF";
 
+sensor_timer = ticks_ms()
 code1 = 1;
 code2 = 0;
 
@@ -54,7 +55,11 @@ def map_value(in_val, in_min, in_max, out_min, out_max):
         sleep(.5);'''
 
 while True:
-    if code1 > code2:
+    '''led1.off();
+    led2.off();
+    led3.off();
+    led4.off();'''
+    if (code1 > code2) and (ticks_ms() > sensor_timer+100):
         # print('PART ONE WORKING');
         if btn.value() == 0:
             # print('part 2 worked');
@@ -68,10 +73,20 @@ while True:
                 red = 255;
                 green = 0;
                 blue = 0;
+                '''for strip in range(30):
+                    neopixel_strip[strip] = (red, green, blue);
+                for i in reversed(range(255)):
+                    if red >= 254:
+                        red = i;
+                    sleep(.5);
+                for i in range(255):
+                    if red == 0:
+                        red = i;
+                    sleep(.5);'''
                 for i in range(30):
                     neopixel_strip[i] = (red, green, blue);
-                neopixel_strip.write();
-                sleep(.5);
+                    neopixel_strip.write();
+                    sleep(.05);
             elif mode == "RED":
                 mode = "GREEN";
                 code2 += 1;
@@ -82,10 +97,13 @@ while True:
                 red = 0;
                 green = 255;
                 blue = 0;
+                '''for i in range(30):
+                    neopixel_strip[i] = (red, green, blue);
+                neopixel_strip.write();'''
                 for i in range(30):
                     neopixel_strip[i] = (red, green, blue);
-                neopixel_strip.write();
-                sleep(.5);
+                    neopixel_strip.write();
+                    sleep(.05);
             elif mode == "GREEN":
                 mode = "BLUE";
                 code2 += 1;
@@ -96,10 +114,13 @@ while True:
                 red = 0;
                 green = 0;
                 blue = 255;
+                '''for i in range(30):
+                    neopixel_strip[i] = (red, green, blue);
+                neopixel_strip.write();'''
                 for i in range(30):
                     neopixel_strip[i] = (red, green, blue);
-                neopixel_strip.write();
-                sleep(.5);
+                    neopixel_strip.write();
+                    sleep(.05);
             elif mode == "BLUE":
                 mode = "WHITE";
                 code2 += 1;
@@ -110,10 +131,13 @@ while True:
                 red = 255;
                 green = 255;
                 blue = 255;
+                '''for i in range(30):
+                    neopixel_strip[i] = (red, green, blue);
+                neopixel_strip.write();'''
                 for i in range(30):
                     neopixel_strip[i] = (red, green, blue);
-                neopixel_strip.write();
-                sleep(.5);
+                    neopixel_strip.write();
+                    sleep(.05);
             elif mode == "WHITE":
                 mode = "OFF";
                 code2 += 1;
@@ -124,13 +148,16 @@ while True:
                 red = 0;
                 green = 0;
                 blue = 0;
+                '''for i in range(30):
+                    neopixel_strip[i] = (red, green, blue);
+                neopixel_strip.write();'''
                 for i in range(30):
                     neopixel_strip[i] = (red, green, blue);
-                neopixel_strip.write();
-                sleep(.5);
+                    neopixel_strip.write();
+                    sleep(.05);
+        sensor_timer = ticks_ms()
     if code1 == code2:
         code1 += 1;
-        sleep(.5);
 '''
     if (mode == "0") and (btn.value() == 1):
         led1.off();
