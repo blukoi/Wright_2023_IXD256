@@ -70,7 +70,7 @@ while True:
                 led2.off();
                 led3.off();
                 led4.off();
-                red = 255;
+                red = 200;
                 green = 0;
                 blue = 0;
                 '''for strip in range(30):
@@ -95,7 +95,7 @@ while True:
                 led3.off();
                 led4.off();
                 red = 0;
-                green = 255;
+                green = 200;
                 blue = 0;
                 '''for i in range(30):
                     neopixel_strip[i] = (red, green, blue);
@@ -113,7 +113,7 @@ while True:
                 led4.off();
                 red = 0;
                 green = 0;
-                blue = 255;
+                blue = 200;
                 '''for i in range(30):
                     neopixel_strip[i] = (red, green, blue);
                 neopixel_strip.write();'''
@@ -128,9 +128,9 @@ while True:
                 led2.off();
                 led3.off();
                 led4.on();
-                red = 255;
-                green = 255;
-                blue = 255;
+                red = 200;
+                green = 200;
+                blue = 200;
                 '''for i in range(30):
                     neopixel_strip[i] = (red, green, blue);
                 neopixel_strip.write();'''
