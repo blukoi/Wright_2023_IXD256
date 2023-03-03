@@ -19,6 +19,8 @@ While making the circuit I decided to change the idea to have a red LED to show 
 - [The completed prototype with 4 quarters completing the circuit.](/../main/Week03/IMG_1938.JPG)
 - Click through for [a short video clip](https://github.com/blukoi/Wright_2023_IXD256/blob/main/Week03/IMG_1939.mov) showing the physical model working.
 
+---
+
 ## Assignment 2
 
 **The prompt:**
@@ -38,3 +40,5 @@ The original idea also included 4x LEDs (1x red, 1x green, 1x blue, and 1x white
 - Click through for a [short video clip](https://github.com/blukoi/Wright_2023_IXD256/blob/main/Project2/video_0_abdb23ff86a8461cb4ceb66c09ab165b.MP4) of the first test of the lamp turning on.
 - [Final wiring, including disconnected LED wires and a test button on the breadboard.](/../main/Project2/IMG_2025.JPG)
 - Click through for a [short video clip](https://github.com/blukoi/Wright_2023_IXD256/blob/main/Project2/IMG_2017%20copy%202.mov) of the physical prototype working.
+
+---
