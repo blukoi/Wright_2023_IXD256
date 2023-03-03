@@ -16,8 +16,14 @@ state = "RED";
 
 code1 = 1;
 code2 = 0;
-codemax = 6;
+codemax = 3;
 code_timer = ticks_ms();
+
+servo_obj = Servo(Pin(26)); # create a Servo object on G26 (yellow wire)
+
+analog_pin = Pin(33, Pin.IN) # configure input pin on pin 33
+adc = ADC(analog_pin) # create analog input
+adc.atten(ADC.ATTN_11DB) # enable full-range on ADC pin
 
 while True:
     if state == "RED":
@@ -34,10 +40,18 @@ while True:
             neopixel_strip[i] = (255,255,0);
             neopixel_strip.write();
         if code1 > code2 and btn.value() == 0:
-            state = "YELLOW";
-            code2 += 1;
-            print("Button Pressed");
-            sleep(.1);
+            if ticks_ms() > btn_timer+100:
+                state = "GREEN";
+                code2 += 1;
+                btn_timer = ticks_ms();
+                print("Button Pressed a second time");
+                sleep(.1);
+    if state == "GREEN":
+        analog_val = adc.read(); # read analog value (0-1024)
+        servo_val = map_value(analog_val, 0, 4095, 1000, 1500);
+        servo_obj.write_us(servo_val);
+        print(servo_val);
+        sleep(.1);
     if code1 == codemax:
         code1 = 1;
         code2 = 0;
