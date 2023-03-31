@@ -88,6 +88,7 @@ def displayScreen(state):
             neopixel_strip[i] = pixel_green(screenGreen[i])
     neopixel_strip.write()
 
+print('hello')
 while True:
     if state == "RED":
         # print(state);
@@ -106,7 +107,7 @@ while True:
             # print("Pressseeeeddddd");
             count += 1;
             print(count);
-            if count >= 15:
+            if count >= 10:
                 state = "GREEN";
                 code2 += 1;
                 print("Button Pressed a second time");
@@ -121,7 +122,7 @@ while True:
         servo_obj.write_us(servo_val);
         print(servo_val);
         sleep(.1);
-        if code1 > code2 and btn.value() == 0 and ticks_ms() > code_timer+500:
+        if code1 > code2 and btn.value() == 0 and ticks_ms() > code_timer+1000:
             state = "RED";
             code2 += 1;
             servo_val = 1500;
