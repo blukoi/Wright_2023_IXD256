@@ -42,3 +42,19 @@ The original idea also included 4x LEDs (1x red, 1x green, 1x blue, and 1x white
 - Click through for a [short video clip](https://github.com/blukoi/Wright_2023_IXD256/blob/main/Project2/IMG_2017%20copy%202.mov) of the physical prototype working.
 
 ---
+
+**Using the M5Stack Core2:**
+
+With extension modules added, the core2 should not power on unless connected to power, although it will utilize the battery to stay on once it’s been turned on. (Without extension modules, you may not have these problems.)
+
+1. To begin: Have the device powered off and unlisted in VSCode's m5stack extension (If listed, close VSCode)
+2. Connect the Core2 with a USB-C cable
+3. When the Core2 is connected it should power on (If not, power it on)
+4. Check connected devices (in terminal, vscode, etc.) to make sure its showing up
+5. Open VSCode; click the “Add M5Stack” button at the bottom of the window; Select the Core2 (should read as “/dev/tty.wchusbserial############”)
+6. With the device added, open the “M5STACK DEVICE” workspace
+7. Select the “main.py” file to begin adding/editing code
+8. To run the file, press the filled-in arrow in the top-right of the VSCode window
+9. There’s no available terminal; the simplest way to test new code is to change the color of the screen
+10. You will have to reset the device every time you want to run new code; to reset device, press the reset button while it’s still plugged in; the device and python file should remain open and available in VSCode but to be safe, copy code to a local file for major changes
+11. If the device is unplugged you will need to restart from step number 1 to begin editing and testing new code; in this case, any unsaved changes to code will not be saved
