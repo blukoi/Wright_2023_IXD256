@@ -69,6 +69,12 @@ weathertoday = None
 timelabel = M5Label('', x=40, y=70, color=0x000000, font=FONT_MONT_48, parent=None)
 # M5Textarea(text='', x=0, y=0, w=None, h=None)
 # timelabel = M5Textarea()
+selected = None
+selectedhour = None
+selectedday = None
+forecasttemp = None
+forecastfeelslike = None
+forecastcond = None
 
 # timelabel = M5Label('', x=40, y=82, color=0x000000, font=FONT_MONT_48, parent=None)
 daylabel = M5Label('', x=40, y=74, color=0x000000, font=FONT_MONT_22, parent=None)
@@ -88,12 +94,23 @@ while True:
     x_adj = map_value(x, in_min = 0, in_max = 1024, out_min = 1, out_max = 4)
     y = hover.distance
     y_adj = map_value(y, in_min = 0, in_max = 8191, out_min = 1, out_max = 10)
-    if y_adj > 0:
-        mqtt_feed.publish(
-            'theblukoi/feeds/test', # path
-            str(y_adj) # turn variable into a string to publish
-        );
-        wait(1);
+    if y_adj <= 4:
+        # mqtt_feed.publish(
+        #     'theblukoi/feeds/test', # path
+        #     str(y_adj) # turn variable into a string to publish
+        # );
+        # wait(1);
+        weather = urequests.get(url='https://api.weatherapi.com/v1/forecast.json?key=f6fb81c6e7e5488081c173341231404&q=Los_Angeles&days=2&aqi=no&alerts=yes')
+        weatherdata = weather.json()
+        selected = weatherdata['location']['localtime']
+        selectedhour = ((int(selected[11:12]) + y_adj) + 1)
+        if selectedhour >= 24:
+            selectedday = 0
+        elif selectedhour < 24:
+            selectedday = 1
+        forecasttemp = weatherdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['temp_f']
+        forecastfeelslike = weatherdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['feelslike_f']
+        forecasttemp = weatherdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['condition']['text']
     if x_adj == 1:
         screenmode = 'CLOCK'
     if x_adj == 2:
