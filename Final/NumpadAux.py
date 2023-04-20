@@ -10,10 +10,6 @@ import sys
 import json
 from m5mqtt import M5mqtt  # M5Stack MQTT library
 
-import smtplib
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
-
 # SETUP
 screen = M5Screen()
 screen.clean_screen()
@@ -108,19 +104,13 @@ while True:
             selectedday = 0
         elif selectedhour < 24:
             selectedday = 1
-        forecasttemp = str(weatherdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['temp_f']) + "°"
-        forecastfeelslike = str(weatherdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['feelslike_f']) + "°"
-        forecastcond = weatherdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['condition']['text']
-        if y_adj == 1:
-            mqtt_feed.publish(
-                'theblukoi/feeds/test', # path
-                "In " + str(y_adj) + " hour, the temperature will be " + forecasttemp + ", will feel like " + forecastfeelslike + ", and it will be " + forecastcond + "."
-            )
-        elif y_adj > 1:
-            mqtt_feed.publish(
-                'theblukoi/feeds/test', # path
-                "In " + str(y_adj) + " hours, the temperature will be " + forecasttemp + ", will feel like " + forecastfeelslike + ", and it will be " + forecastcond + "."
-            )
+        forecasttemp = weatherdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['temp_f']
+        # forecastfeelslike = str(weatherdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['feelslike_f']) + "°"
+        # forecastcond = weatherdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['condition']['text']
+        mqtt_feed.publish(
+            'theblukoi/feeds/test', # path
+            str(forecasttemp)
+        )
         timer = ticks_ms()
     if x_adj == 1:
         screenmode = 'CLOCK'
