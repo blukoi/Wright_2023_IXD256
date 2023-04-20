@@ -10,11 +10,16 @@ import sys
 import json
 from m5mqtt import M5mqtt  # M5Stack MQTT library
 
+import smtplib
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+
 # SETUP
 screen = M5Screen()
 screen.clean_screen()
 screen.set_screen_bg_color(0x000)
 screenmode = None
+timer = ticks_ms()
 
 # CONNECT TO WIFI
 # change arguments below to connect to the WiFi network, such as 'ACCD':
@@ -94,12 +99,7 @@ while True:
     x_adj = map_value(x, in_min = 0, in_max = 1024, out_min = 1, out_max = 4)
     y = hover.distance
     y_adj = map_value(y, in_min = 0, in_max = 8191, out_min = 1, out_max = 10)
-    if y_adj <= 4:
-        # mqtt_feed.publish(
-        #     'theblukoi/feeds/test', # path
-        #     str(y_adj) # turn variable into a string to publish
-        # );
-        # wait(1);
+    if y_adj <= 4 and ticks_ms() > (timer + 5000):
         weather = urequests.get(url='https://api.weatherapi.com/v1/forecast.json?key=f6fb81c6e7e5488081c173341231404&q=Los_Angeles&days=2&aqi=no&alerts=yes')
         weatherdata = weather.json()
         selected = weatherdata['location']['localtime']
@@ -108,9 +108,20 @@ while True:
             selectedday = 0
         elif selectedhour < 24:
             selectedday = 1
-        forecasttemp = weatherdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['temp_f']
-        forecastfeelslike = weatherdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['feelslike_f']
-        forecasttemp = weatherdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['condition']['text']
+        forecasttemp = str(weatherdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['temp_f']) + "°"
+        forecastfeelslike = str(weatherdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['feelslike_f']) + "°"
+        forecastcond = weatherdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['condition']['text']
+        if y_adj == 1:
+            mqtt_feed.publish(
+                'theblukoi/feeds/test', # path
+                "In " + str(y_adj) + " hour, the temperature will be " + forecasttemp + ", will feel like " + forecastfeelslike + ", and it will be " + forecastcond + "."
+            )
+        elif y_adj > 1:
+            mqtt_feed.publish(
+                'theblukoi/feeds/test', # path
+                "In " + str(y_adj) + " hours, the temperature will be " + forecasttemp + ", will feel like " + forecastfeelslike + ", and it will be " + forecastcond + "."
+            )
+        timer = ticks_ms()
     if x_adj == 1:
         screenmode = 'CLOCK'
     if x_adj == 2:
