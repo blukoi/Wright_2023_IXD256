@@ -206,8 +206,8 @@ At the same time as I took this class I also took a class on Rapid Prototyping, 
 I took this file and laser cut out of 1/8-inch MDF, then it was a simple process to glue these pieces together. I had thought about 3D printing this as well but the cost would've been over $40 whereas it was under $2 for 2 ft² of 1/8-inch MDF plus an additional $0.45 of laser cutting.
 
 ![Completed prototype, straight on](../main/Final/Box1.jpg)
-![Completed prototype, side view](../main/Final/Box2.jpg)
-![Completed prototype, close up](../main/Final/Box3.jpg)
+![Completed prototype, side view](../main/Final/Box2.JPG)
+![Completed prototype, close up](../main/Final/Box3.JPG)
 
 You can find the Adobe Illustrator file [here](https://github.com/blukoi/Wright_2023_IXD256/blob/main/Final/Box.ai). I made one small error in my measurements before laser cutting, where the interior angled supports to hold the numpad PCB and the Core2 up to their respective openings were cut without accounting for the 1/8-inch thick walls at the top and bottom, but that's since been fixed. This file also includes extra cuts which are meant to be used to ensure that, while gluing the walls to the floor, they're at a flush 90°.
 
