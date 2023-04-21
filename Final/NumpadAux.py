@@ -98,7 +98,7 @@ while True:
     y = hover.distance
     y_adj = map_value(y, in_min = 0, in_max = 8191, out_min = 1, out_max = 10)
 
-    if y_adj <= 4 and ticks_ms() > (timer + 5000):
+    '''if y_adj <= 4 and ticks_ms() > (timer + 5000):
         notifforecast = urequests.get(url='https://api.weatherapi.com/v1/forecast.json?key=f6fb81c6e7e5488081c173341231404&q=Los_Angeles&days=2&aqi=no&alerts=yes')
         forecastdata = notifforecast.json()
         selected = forecastdata['location']['localtime']
@@ -111,7 +111,7 @@ while True:
         forecastfeelslike = str(forecastdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['feelslike_f']) + "°"
         forecastcond = forecastdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['condition']['text']
         notif = urequests.post(url='http://maker.ifttt.com/trigger/sensor_triggered/with/key/diWDBFMm06kX77GMorkg7g',json={'Hours from now' : y_adj, 'Temp' : forecasttemp, 'Will Feel Like' : forecastfeelslike, 'Weather' : forecastcond}, headers={'Content-Type':'application/json'})
-        timer = ticks_ms()
+        timer = ticks_ms()'''
     if x_adj == 1:
         screenmode = 'CLOCK'
     if x_adj == 2:

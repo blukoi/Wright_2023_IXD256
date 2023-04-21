@@ -77,12 +77,139 @@ I decided to pursue the numpad idea as there are macropads with similar features
 ## Implementation
 
 **Hardware**
+* *M5Stack Core2*: Initially I had planned to use a relatively large ~4-inch display connected to the m5stack Atom Matrix board I already had. This proved somewhat difficult to find so after a week I chose to use the m5stack's Core2 device, which is a pre-made device housing an esp32 connected to a 320x240-pixel, full-color display, along with a battery, variety of sensors, grove ports, on/off button, reset button, usb-c port, SD card slot, as well as the ability to add modules.
+* *M5Stack USB Module*: This module attachs to the Core2 and adds several inputs, inputs, and a USB-B port, specifically built as a way to add USB host functionality to the Core2. This ended up being impossible for my setup; m5stack has a program which can be used to install USB host for specific devices (keyboards, led strips, etc.) to the esp32 on your Core2, but the program itself only runs on Windows, which I don't have. This forced me to scale back the numpad from the working prototype; the numpad can still be connected to the computer but can't be used for interactions on the Core2.
+* *M5Stack Extension Port Module*: The Core2 only has one grove port natively, so in order to attach an additional sensor this extension port is necessary, which adds four more grove ports.
+* *M5Stack Time of Flight Sensor*: This TOF sensor would be used for simple interactions. The idea was that be holding your hand over the sensor you could send yourself reminders in the form of a notification.
+* *M5Stack Angle Sensor*: This angle sensor, as a potentiometer, would allow for simple state switches without having to rely on buttons.
+* *Numpad*: The numpad was originally intended to serve both as a workable numpad for the connected computer as well as an input for the Core2 device. Since the USB Host doesn't work, the keypad isn't wired/connected to the Core2 at all and instead will have to simply be connected to the computer, meaning that it will work as a numpad for the computer but not as an input for the Core2 prototype.
+
+![Fritzing diagram next to wiring schematic.](../main/Final/Final_Hardware.png)
 
 **Firmware**
 
+[Here is the complete, working code](https://github.com/blukoi/Wright_2023_IXD256/blob/main/Final/NumpadAux.py) which will work without changes and [here's a working file](https://github.com/blukoi/Wright_2023_IXD256/blob/main/Final/NumpadAux_Testing.py) which I was using to test improvements, make changes, and add functionality.
+
+``` Python
+timelabel = M5Label('', x=40, y=70, color=0x000000, font=FONT_MONT_48, parent=None)
+daylabel = M5Label('', x=40, y=74, color=0x000000, font=FONT_MONT_22, parent=None)
+datelabel = M5Label('', x=40, y=104, color=0x000000, font=FONT_MONT_48, parent=None)
+currently = M5Label('', x=40, y=76, color=0x000000, font=FONT_MONT_22, parent=None)
+currentdegree = M5Label('', x=40, y=110, color=0x000000, font=FONT_MONT_48, parent=None)
+condition = M5Label('', x=40, y=164, color=0x000000, font=FONT_MONT_22, parent=None)
+low = M5Label('', x=40, y=100, color=0x000000, font=FONT_MONT_22, parent=None)
+high = M5Label('', x=160, y=100, color=0x000000, font=FONT_MONT_22, parent=None)
+lowdegree = M5Label('', x=40, y=130, color=0x000000, font=FONT_MONT_48, parent=None)
+highdegree = M5Label('', x=160, y=130, color=0x000000, font=FONT_MONT_48, parent=None)
+forecast = M5Label('', x=40, y=184, color=0x000000, font=FONT_MONT_22, parent=None)
+```
+
+The way that M5Stack's library for their propietary displays works, text labels need to be setup in the headers similar to a variable. It's possible to set them up exactly like a variable, e.g. `timelabel = None` and then turn them into a text label when the loop starts, but M5Stack has another function, `set_text` which allows existing text labels to simply change the text. To make use of their library, all existing text labels are setup in the headers with a blank string. Then, depending on the screen state the text is changed to the necessary variables while any unnecessary text labels are changed to a blank string.
+
+``` Python
+angle = unit.get(unit.ANGLE, (35,34))
+x = angle.read()
+x_adj = map_value(x, in_min = 0, in_max = 1024, out_min = 1, out_max = 4)
+```
+
+The potentiometer needs the minumum and maximum values changed (using a `map_value` function) to reflect the possible screen states. Because I want 4 different screen states the maximum is changed to 4.
+
+``` Python
+if x_adj == 1:
+        screenmode = 'CLOCK'
+if screenmode == 'CLOCK':
+        # screen.clean_screen()
+        screen.set_screen_bg_color(0xFFFFFF)
+        ...
+
+        # Don't need these variables for this screen
+        datelabel.set_text('')
+        ...
+
+        # Fill out this screen
+        time = urequests.get(url='https://timeapi.io/api/Time/current/zone?timeZone=America/Los_Angeles')
+        timedata = time.json()
+        hour = timedata['hour']
+        minute = timedata['minute']
+        timelabel.set_text(str(hour) + ':' + str(minute))
+        wait(1)
+```
+
+Here you can see that the potentiometer value sets a screen state, and then whenever the screen state is set to `"CLOCK"` (among other things) it clears unnecessary text labels such as `datelabel` by setting them to a blank string, then the code makes an API get request to the necessary API, in this case a time API with a specification for the necessary time zone. The retrieved JSON file is parsed and two variables `hour` and `minute` are set from the parsed JSON file, and the necessary label `timelabel` is populated with these variables, resulting in a display of the current time as a `HH:MM` string.
+
+There are 4 different screen states, so there are 4 different sets of variables with accompanying API requests.
+
+``` Python
+hover = unit.get(unit.TOF, (19,27))
+y = hover.distance
+y_adj = map_value(y, in_min = 0, in_max = 8191, out_min = 1, out_max = 10)
+```
+
+Here is where some of the problems start: the TOF sensor. The Core2 has no problems reading the values from the TOF sensor itself; this code is all standard to start reading from the TOF sensor. Let's break it down:
+
+``` Python
+if y_adj <= 4 and ticks_ms() > (timer + 5000):
+```
+
+So, if the time of flight sensor reads below a certain value and hasn't been triggered in the past 5 seconds, then...
+
+``` Python
+    notifforecast = urequests.get(url='https://api.weatherapi.com/v1/forecast.json?key=f6fb81c6e7e5488081c173341231404&q=Los_Angeles&days=2&aqi=no&alerts=yes')
+    forecastdata = notifforecast.json()
+```
+
+...an API get request will be made to a weather API, with the resulting JSON file parsed into a readable list. Then...
+
+``` Python
+    selected = forecastdata['location']['localtime']
+    selectedhour = ((int(selected[11:12]) + y_adj) + 1)
+    if selectedhour >= 24:
+        selectedday = 0
+    elif selectedhour < 24:
+        selectedday = 1
+```
+
+As part of the weather API, the JSON file also includes the current local time, so the local time is used to do some simple math to figure out which part of the JSON file to read. The JSON file is a weather forecast which includes 48 objects separated into separate lists, so we need to pick the right object.
+
+``` Python
+    forecasttemp = str(forecastdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['temp_f']) + "°"
+    forecastfeelslike = str(forecastdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['feelslike_f']) + "°"
+    forecastcond = forecastdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['condition']['text']
+```
+
+After getting the necessary object, it's parsed into a series of strings, then...
+
+``` Python
+    notif = urequests.post(url='http://maker.ifttt.com/trigger/sensor_triggered/with/key/diWDBFMm06kX77GMorkg7g',json={'Hours from now' : y_adj, 'Temp' : forecasttemp, 'Will Feel Like' : forecastfeelslike, 'Weather' : forecastcond}, headers={'Content-Type':'application/json'})
+    timer = ticks_ms()
+```
+
+...an API post request is pushed to IFTTT's Maker Service which includes a JSON packet with 3 variables represented as strings. IFTTT is then meant to take this post request and send a notification.
+
+I never managed to get this to work. There's something messed up in the way that I've written my code so that there are too many API requests happening in such a way that the board can't handle it when the code for the TOF sensor is running. Since the code for the screen states is happening actively but the TOF sensor function is running in the background, it means that the program could end up trying to make too many different API requests at once, which results in an error and the post request never gets made.
+
 **Integrations**
 
+* [This is the time API](https://timeapi.io/) that I used and [you can see the documentation here](https://timeapi.io/swagger/index.html)
+* [This is the weather API](https://www.weatherapi.com/) that I used and [you can see the documentation here](https://www.weatherapi.com/docs/); you have to make an account to see the retrievable JSON files
+
+![Screenshot of IFTTT applet structure](../main/Final/ifttt_screen.png)
+
+I also incorporated an IFTTT applet as a way to get a notification from the TOF sensor (which I never got working). It makes use of their Maker service's webhooks service to send a JSON object as part of the API post request URL.
+
 **Enclosure/Mechanical Design**
+
+![Wireframes for laser cuts to make a box](../main/Final/Final_Box.png)
+
+At the same time as I took this class I also took a class on Rapid Prototyping, which involves using SolidWorks to physically produce objects from laser cutting and 3D printing. Because of that, and because the physyical prototype I would need is fairly simple, I was easily able to create an Adobe Illustrator file consisting of the simple shapes I would need to laser cut.
+
+I took this file and laser cut out of 1/8-inch MDF, then it was a simple process to glue these pieces together. I had thought about 3D printing this as well but the cost would've been over $40 whereas it was under $2 for 2 ft² of 1/8-inch MDF plus an additional $0.45 of laser cutting.
+
+![Completed prototype, straight on](../main/Final/Box1.jpg)
+![Completed prototype, side view](../main/Final/Box2.jpg)
+![Completed prototype, close up](../main/Final/Box3.jpg)
+
+You can find the Adobe Illustrator file [here](https://github.com/blukoi/Wright_2023_IXD256/blob/main/Final/Box.ai). I made one small error in my measurements before laser cutting, where the interior angled supports to hold the numpad PCB and the Core2 up to their respective openings were cut without accounting for the 1/8-inch thick walls at the top and bottom, but that's since been fixed. This file also includes extra cuts which are meant to be used to ensure that, while gluing the walls to the floor, they're at a flush 90°.
 
 ## Project Outcome
 
