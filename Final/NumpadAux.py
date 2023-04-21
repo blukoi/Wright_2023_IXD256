@@ -96,7 +96,7 @@ while True:
     x = angle.read()
     x_adj = map_value(x, in_min = 0, in_max = 1024, out_min = 1, out_max = 4)
     y = hover.distance
-    y_adj = map_value(y, in_min = 0, in_max = 8191, out_min = 1, out_max = 10)
+    y_adj = map_value(y, in_min = 0, in_max = 8191, out_min = 1, out_max = 80)
 
     '''if y_adj <= 4 and ticks_ms() > (timer + 5000):
         notifforecast = urequests.get(url='https://api.weatherapi.com/v1/forecast.json?key=f6fb81c6e7e5488081c173341231404&q=Los_Angeles&days=2&aqi=no&alerts=yes')
@@ -111,6 +111,7 @@ while True:
         forecastfeelslike = str(forecastdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['feelslike_f']) + "°"
         forecastcond = forecastdata['forecast']['forecastday'][selectedday]['hour'][selectedhour]['condition']['text']
         notif = urequests.post(url='http://maker.ifttt.com/trigger/sensor_triggered/with/key/diWDBFMm06kX77GMorkg7g',json={'Hours from now' : y_adj, 'Temp' : forecasttemp, 'Will Feel Like' : forecastfeelslike, 'Weather' : forecastcond}, headers={'Content-Type':'application/json'})
+        wait(5)
         timer = ticks_ms()'''
     if x_adj == 1:
         screenmode = 'CLOCK'
@@ -159,8 +160,17 @@ while True:
         time = urequests.get(url='https://timeapi.io/api/Time/current/zone?timeZone=America/Los_Angeles')
         timedata = time.json()
         hour = timedata['hour']
+        if hour > 12:
+            hour -= 12
         minute = timedata['minute']
-        timelabel.set_text(str(hour) + ':' + str(minute))
+        if hour< 12 :
+            half = ' am'
+        elif hour >= 12:
+            half = ' pm'
+        if minute < 10:
+            timelabel.set_text(str(hour) + ':0' + str(minute) + str(half))
+        elif minute >= 10:
+            timelabel.set_text(str(hour) + ':' + str(minute) + str(half))
         wait(1)
     if screenmode == 'DATE':
         # screen.clean_screen()

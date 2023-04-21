@@ -213,4 +213,23 @@ You can find the Adobe Illustrator file [here](https://github.com/blukoi/Wright_
 
 ## Project Outcome
 
+The final prototype has the Core2 device connected to the TOF sensor, located above the screen, and the potentiometer, located below the screen. All 3 are to the left of the numpad, but the numpad is connected to the computer, not the Core2. All 4 of these (Core2, TOF sensor, potentiometer, and numpad) are housed in an MDF enclosure, with the face at a slight angle.
+
+The numpad couldn't be connected to the Core2 because I couldn't get USB host working on my board. Additionally, the code for the TOF sensor needs to be commented out (hidden) while the prototype is running; if the code for the TOF sensor is running then, when it triggers and runs, there are too many concurrent API calls and the Core2 crashes.
+
+With that in mind, the 4 screens displaying the current time, date, weather, and the day's forecast are all working as intended. There's some slight lag between screens as a new API call has to be made to populate the necessary variables (lag is most noticeable when switching to the day's forecast, since the returned JSON file is quite a big larger than any other returned JSON file for the other screens). However, with wait statements preventing too many API calls, the screens will update, as far as the user is concerned, in real time.
+
+[In this video you can see the display changing between screen modes](../main/Final/Final_Video.mov) and in the fourth screen you can see the increased lag between changing the screen mode and populating the API information.
+
+![Photo of final prototype from 1/4 angle, showing clock](../main/Final/Box_Final1.JPG)
+![Photo of final prototype from 3/4 angle, showing date](../main/Final/Box_Final2.JPG)
+![Photo of final prototype from straight on, showing current weather](../main/Final/Box_Final3.JPG)
+![Close up photo of final prototype, showing weather forecast](../main/Final/Box_Final4.JPG)
+
 ## Conclusion
+
+This entire project has been a huge learning opportunity and there were multiple instances when I had to scale back from what I had hoped to accomplish.
+
+The original concept, to connect to Bungie's Destiny 2 API and use the potentiometer, TOF sensor, and numpad to interact is very far from where I ended up. My first "mistake" was in choosing the Core2 board, which was very finnicky and had a learning curve in and of itself because it connected and worked slightly differently than the Atom Matrix, which we had been using previously. The board itself had some minor issues as well, like not being able to connect to my home wi-fi but only connecting to my phone's hot spot, which made testing code a slow, cumbersome process. The Core2 also had issues with USB host, which meant I couldn't use the numpad for prototype interactions. Additionally, because of how complex the Destiny 2 API is, I had to pivot to a simpler API, that being the Time and the Weather APIs.
+
+However, this has been a very insightful process. I'm quite interested in exploring Raspberry Pi in the future, as I think that it offers many advantages over the system that I currently have. There's certainly a lot of lessons I can take from my code, as well. There are things about getting/posting API requests which I'm certain are going to be useful in the future. Mostly, though, I'm glad that despite the issues I was able to build some level of a working prototype which connected to an API to display different amounts of information depending on different states.
