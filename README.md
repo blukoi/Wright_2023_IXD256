@@ -116,23 +116,23 @@ The potentiometer needs the minumum and maximum values changed (using a `map_val
 
 ``` Python
 if x_adj == 1:
-        screenmode = 'CLOCK'
+    screenmode = 'CLOCK'
 if screenmode == 'CLOCK':
-        # screen.clean_screen()
-        screen.set_screen_bg_color(0xFFFFFF)
-        ...
+    # screen.clean_screen()
+    screen.set_screen_bg_color(0xFFFFFF)
+    ...
 
-        # Don't need these variables for this screen
-        datelabel.set_text('')
-        ...
+    # Don't need these variables for this screen
+    datelabel.set_text('')
+    ...
 
-        # Fill out this screen
-        time = urequests.get(url='https://timeapi.io/api/Time/current/zone?timeZone=America/Los_Angeles')
-        timedata = time.json()
-        hour = timedata['hour']
-        minute = timedata['minute']
-        timelabel.set_text(str(hour) + ':' + str(minute))
-        wait(1)
+    # Fill out this screen
+    time = urequests.get(url='https://timeapi.io/api/Time/current/zone?timeZone=America/Los_Angeles')
+    timedata = time.json()
+    hour = timedata['hour']
+    minute = timedata['minute']
+    timelabel.set_text(str(hour) + ':' + str(minute))
+    wait(1)
 ```
 
 Here you can see that the potentiometer value sets a screen state, and then whenever the screen state is set to `"CLOCK"` (among other things) it clears unnecessary text labels such as `datelabel` by setting them to a blank string, then the code makes an API get request to the necessary API, in this case a time API with a specification for the necessary time zone. The retrieved JSON file is parsed and two variables `hour` and `minute` are set from the parsed JSON file, and the necessary label `timelabel` is populated with these variables, resulting in a display of the current time as a `HH:MM` string.
