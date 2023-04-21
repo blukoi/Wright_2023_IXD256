@@ -16,6 +16,10 @@ screen.clean_screen()
 screen.set_screen_bg_color(0x000)
 screenmode = None
 timer = ticks_ms()
+clocktimer = ticks_ms()
+datetimer = ticks_ms()
+weathertimer = ticks_ms()
+forecasttimer = ticks_ms()
 
 # CONNECT TO WIFI
 # change arguments below to connect to the WiFi network, such as 'ACCD':
@@ -70,14 +74,14 @@ weathertoday = None
 timelabel = M5Label('', x=40, y=70, color=0x000000, font=FONT_MONT_48, parent=None)
 # M5Textarea(text='', x=0, y=0, w=None, h=None)
 # timelabel = M5Textarea()
+forecast = None
 selected = None
 selectedhour = None
 selectedday = None
-notifforecast = None
-forecastdata = None
 forecasttemp = None
 forecastfeelslike = None
 forecastcond = None
+notif = None
 
 # timelabel = M5Label('', x=40, y=82, color=0x000000, font=FONT_MONT_48, parent=None)
 daylabel = M5Label('', x=40, y=74, color=0x000000, font=FONT_MONT_22, parent=None)
@@ -89,7 +93,7 @@ low = M5Label('', x=40, y=100, color=0x000000, font=FONT_MONT_22, parent=None)
 high = M5Label('', x=160, y=100, color=0x000000, font=FONT_MONT_22, parent=None)
 lowdegree = M5Label('', x=40, y=130, color=0x000000, font=FONT_MONT_48, parent=None)
 highdegree = M5Label('', x=160, y=130, color=0x000000, font=FONT_MONT_48, parent=None)
-forecast = M5Label('', x=40, y=184, color=0x000000, font=FONT_MONT_22, parent=None)
+forecaststatus = M5Label('', x=40, y=184, color=0x000000, font=FONT_MONT_22, parent=None)
 
 while True:
     screen.set_screen_bg_color(0xFFFFFF)
@@ -98,10 +102,31 @@ while True:
     y = hover.distance
     y_adj = map_value(y, in_min = 0, in_max = 8191, out_min = 1, out_max = 10)
 
+    # Trying to simplify code/API requests
+    forecast = urequests.get(url='https://api.weatherapi.com/v1/forecast.json?key=f6fb81c6e7e5488081c173341231404&q=Los_Angeles&days=2&aqi=no&alerts=yes')
+    forecastdata = forecast.json()
+    selected = forecastdata['location']['localtime']
+    lowdeg = round(forecastdata['forecast']['forecastday'][0]['day']['mintemp_f'])
+    highdeg = round(forecastdata['forecast']['forecastday'][0]['day']['maxtemp_f'])
+    weathertoday = forecastdata['forecast']['forecastday'][0]['day']['condition']['text']
+
+    weather = urequests.get(url='https://api.weatherapi.com/v1/current.json?key=f6fb81c6e7e5488081c173341231404&q=Los_Angeles&aqi=no')
+    weatherdata = weather.json()
+    weathernow = weatherdata['current']['temp_f']
+    weathercondition = weatherdata['current']['condition']['text']
+
+    time = urequests.get(url='https://timeapi.io/api/Time/current/zone?timeZone=America/Los_Angeles')
+    timedata = time.json()
+    hour = timedata['hour']
+    minute = timedata['minute']
+    day = timedata['day']
+    month = timedata['month']
+    dayofweek = timedata['dayOfWeek']
+
     if y_adj <= 4 and ticks_ms() > (timer + 5000):
-        notifforecast = urequests.get(url='https://api.weatherapi.com/v1/forecast.json?key=f6fb81c6e7e5488081c173341231404&q=Los_Angeles&days=2&aqi=no&alerts=yes')
-        forecastdata = notifforecast.json()
-        selected = forecastdata['location']['localtime']
+        # forecast = urequests.get(url='https://api.weatherapi.com/v1/forecast.json?key=f6fb81c6e7e5488081c173341231404&q=Los_Angeles&days=2&aqi=no&alerts=yes')
+        # forecastdata = forecast.json()
+        # selected = forecastdata['location']['localtime']
         selectedhour = ((int(selected[11:12]) + y_adj) + 1)
         if selectedhour >= 24:
             selectedday = 0
@@ -135,7 +160,7 @@ while True:
             screen.set_screen_bg_color(0xFF00FF)
             wait(1)
         wait(1)'''
-    if screenmode == 'CLOCK':
+    if screenmode == 'CLOCK' and ticks_ms() > (clocktimer + 100):
         # screen.clean_screen()
         screen.set_screen_bg_color(0xFFFFFF)
         line0 = M5Line(x1=0, y1=90, x2=20, y2=90, color=0xd55b5b, width=180, parent=None)
@@ -153,16 +178,17 @@ while True:
         high.set_text('')
         lowdegree.set_text('')
         highdegree.set_text('')
-        forecast.set_text('')
+        forecaststatus.set_text('')
 
         # Fill out this screen
-        time = urequests.get(url='https://timeapi.io/api/Time/current/zone?timeZone=America/Los_Angeles')
-        timedata = time.json()
-        hour = timedata['hour']
-        minute = timedata['minute']
+        # time = urequests.get(url='https://timeapi.io/api/Time/current/zone?timeZone=America/Los_Angeles')
+        # timedata = time.json()
+        # hour = timedata['hour']
+        # minute = timedata['minute']
         timelabel.set_text(str(hour) + ':' + str(minute))
-        wait(1)
-    if screenmode == 'DATE':
+        clocktimer = ticks_ms()
+        # wait(1)
+    if screenmode == 'DATE' and ticks_ms() > (datetimer + 100):
         # screen.clean_screen()
         screen.set_screen_bg_color(0xFFFFFF)
         line0 = M5Line(x1=0, y1=10, x2=20, y2=10, color=0xd55b5b, width=20, parent=None)
@@ -179,18 +205,19 @@ while True:
         high.set_text('')
         lowdegree.set_text('')
         highdegree.set_text('')
-        forecast.set_text('')
+        forecaststatus.set_text('')
 
         # Fill out this screen
-        time = urequests.get(url='https://timeapi.io/api/Time/current/zone?timeZone=America/Los_Angeles')
-        timedata = time.json()
-        day = timedata['day']
-        month = timedata['month']
-        dayofweek = timedata['dayOfWeek']
+        # time = urequests.get(url='https://timeapi.io/api/Time/current/zone?timeZone=America/Los_Angeles')
+        # timedata = time.json()
+        # day = timedata['day']
+        # month = timedata['month']
+        # dayofweek = timedata['dayOfWeek']
         datelabel.set_text(str(month) + '/' + str(day))
         daylabel.set_text(str(dayofweek))
-        wait(1)
-    if screenmode == 'WEATHER':
+        datetimer = ticks_ms()
+        # wait(1)
+    if screenmode == 'WEATHER' and ticks_ms() > (weathertimer + 100):
         # screen.clean_screen()
         screen.set_screen_bg_color(0xFFFFFF)
         line0 = M5Line(x1=0, y1=10, x2=20, y2=10, color=0xd55b5b, width=20, parent=None)
@@ -206,19 +233,20 @@ while True:
         high.set_text('')
         lowdegree.set_text('')
         highdegree.set_text('')
-        forecast.set_text('')
+        forecaststatus.set_text('')
 
         # Fill out this screen
-        weather = urequests.get(url='https://api.weatherapi.com/v1/current.json?key=f6fb81c6e7e5488081c173341231404&q=Los_Angeles&aqi=no')
-        weatherdata = weather.json()
-        weathernow = weatherdata['current']['temp_f']
-        weathercondition = weatherdata['current']['condition']['text']
+        # weather = urequests.get(url='https://api.weatherapi.com/v1/current.json?key=f6fb81c6e7e5488081c173341231404&q=Los_Angeles&aqi=no')
+        # weatherdata = weather.json()
+        # weathernow = weatherdata['current']['temp_f']
+        # weathercondition = weatherdata['current']['condition']['text']
         currently.set_text('Currently')
         currentdegree.set_text(str(weathernow) + '°')
         condition.set_text(str(weathercondition))
         # timelabel.set_text(str(weathernow))
-        wait(1)
-    if screenmode == 'FORECAST':
+        weathertimer = ticks_ms()
+        # wait(1)
+    if screenmode == 'FORECAST' and ticks_ms() > (forecasttimer + 100):
         # screen.clean_screen()
         screen.set_screen_bg_color(0xFFFFFF)
         line0 = M5Line(x1=0, y1=10, x2=20, y2=10, color=0xd55b5b, width=20, parent=None)
@@ -235,14 +263,15 @@ while True:
         condition.set_text('')
 
         # Fill out this screen
-        weather = urequests.get(url='https://api.weatherapi.com/v1/forecast.json?key=f6fb81c6e7e5488081c173341231404&q=Los_Angeles&days=1&aqi=no&alerts=yes')
-        weatherdata = weather.json()
-        lowdeg = round(weatherdata['forecast']['forecastday'][0]['day']['mintemp_f'])
-        highdeg = round(weatherdata['forecast']['forecastday'][0]['day']['maxtemp_f'])
-        weathertoday = weatherdata['forecast']['forecastday'][0]['day']['condition']['text']
+        # forecast = urequests.get(url='https://api.weatherapi.com/v1/forecast.json?key=f6fb81c6e7e5488081c173341231404&q=Los_Angeles&days=1&aqi=no&alerts=yes')
+        # forecastdata = forecast.json()
+        # lowdeg = round(forecastdata['forecast']['forecastday'][0]['day']['mintemp_f'])
+        # highdeg = round(forecastdata['forecast']['forecastday'][0]['day']['maxtemp_f'])
+        # weathertoday = forecastdata['forecast']['forecastday'][0]['day']['condition']['text']
         low.set_text('Low')
         high.set_text('High')
         lowdegree.set_text(str(lowdeg) + "°")
         highdegree.set_text(str(highdeg) + "°")
-        forecast.set_text(weathertoday)
-        wait(1)
+        forecaststatus.set_text(weathertoday)
+        forecasttimer = ticks_ms()
+    wait(1)

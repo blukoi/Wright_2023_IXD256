@@ -58,3 +58,32 @@ With extension modules added, the core2 should not power on unless connected to 
 9. There’s no available terminal; the simplest way to test new code is to change the color of the screen
 10. You will have to reset the device every time you want to run new code; to reset device, press the reset button while it’s still plugged in; the device and python file should remain open and available in VSCode but to be safe, copy code to a local file for major changes
 11. If the device is unplugged you will need to restart from step number 1 to begin editing and testing new code; in this case, any unsaved changes to code will not be saved
+
+---
+
+# Final Project
+
+**Introduction**
+The idea that I had was an auxiliary computer device that would implement a full-color display with either a numpad or macropad. You can see below that both ideas involve a keypad and a screen.
+
+The leftmost idea would be a macropad connected to an esp32 which would have a 4-line display along with 3 rotary encoders. Macropads are keypads which are meant to be customized, allowing the user to map a key command or macro (such as ctrl+c, volume up, etc.) to one of the keys. Of the small rotary encoders, the leftmost would allow the user to "scroll" through a list of different macro sets (one set for macros when working in Photoshop, another set for macros when video editing, etc.) while the rightmost would allow the user to scroll between the rows or columns as a way to check which keys were mapped to what commands. The large rotary encoder would be mappable.
+
+The rightmost idea would be a preexisting numpad that would be connected to an esp32 which would also have a display, potentiometer, and time-of-flight sensor. The esp32 would be connected to Bungie's API for the game Destiny 2 (a game which I play quite a bit of) as a way to utilize the display to show in-game information, such as character or inventory information. The potentiometer would allow the user to "scroll" between different screen states while the TOF sensor would allow the user to interact with the information on screen, such as by sending the information currently displayed as a notification.
+
+I decided to pursue the numpad idea as there are macropads with similar features that already exist, while the idea of connecting a numpad to a display screen was more novel and would give me more work to actually accomplish.
+
+![Two concept sketches for final project.](../main/Final/Final_Concepts.png)
+
+## Implementation
+
+**Hardware**
+
+**Firmware**
+
+**Integrations**
+
+**Enclosure/Mechanical Design**
+
+## Project Outcome
+
+## Conclusion
