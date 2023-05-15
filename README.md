@@ -112,7 +112,7 @@ x = angle.read()
 x_adj = map_value(x, in_min = 0, in_max = 1024, out_min = 1, out_max = 4)
 ```
 
-The potentiometer needs the minumum and maximum values changed (using a `map_value` function) to reflect the possible screen states. Because I want 4 different screen states the maximum is changed to 4.
+The potentiometer needs the minimum and maximum values changed (using a `map_value` function) to reflect the possible screen states. Because I want 4 different screen states the maximum is changed to 4.
 
 ``` Python
 if x_adj == 1:
